@@ -126,10 +126,11 @@ function employeeOptions() {
             
         }
         if (result.choice === 'addRole') {
-            db.promise().query('SELECT * FROM department;').then (result => {
+            db.promise().query('SELECT * FROM department;').then (([results]) => {
                 const deptNamesArr = [];
-                result.forEach((department) => {deptNamesArr.push(department.name);});
-                console.log(deptNamesArr)
+                results.forEach((department) => {deptNamesArr.push(department.name);});
+                console.log('results', results)
+                console.log('deptNamesArr', deptNamesArr)
                 inquirer.prompt([
                     {
                             type: 'input',
