@@ -19,6 +19,12 @@ const db = mysql.createConnection(
     console.log(`Connected to the database.`)
 );
 
+const addDepartment = {
+    type: 'input',
+    name: 'addDep',
+    message: 'enter department name'
+}
+
 function employeeOptions() {
     inquirer.prompt([
         {
@@ -36,6 +42,22 @@ function employeeOptions() {
             {
                 name: 'view all departments',
                 value: 'viewDepartments'
+            },
+            {
+                name: 'add a department',
+                value: 'addDepartment'
+            },
+            {
+                name: 'add a role',
+                value: 'addRole'
+            },
+            {
+                name: 'add an employee',
+                value: 'addEmployee'
+            },
+            {
+                name: 'update an employees role',
+                value: 'updateEmployeeRole'
             }
             ]
         }
@@ -58,6 +80,9 @@ function employeeOptions() {
                 console.table(result[0])
             })
             employeeOptions();
+        }
+        if (result.choice === 'addDepartment') {
+            return inquirer.prompt(addDepartment)
         }
     })
 }
