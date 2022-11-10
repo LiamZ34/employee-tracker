@@ -7,6 +7,10 @@ dotenv.config();
 // const db = process.env.DB_NAME;
 // console.log(`your db name is ${process.env.DB_NAME}`)
 
+// const deptNamesArr = [];
+// response.forEach((department) => {deptNamesArr.push(department.department_name);});
+
+
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -25,11 +29,24 @@ const addDepartment = {
     message: 'enter department name'
 }
 
-const addRole = {
-    type: 'input',
-    name: 'addRole',
-    message: 'enter role name'
-}
+// const addRole = [
+//     {
+//     type: 'input',
+//     name: 'newRole',
+//     message: 'enter role name'
+//     },
+//     {
+//         type: 'input',
+//         name: 'newSalary',
+//         message: 'enter salary amount'
+//     },
+//     {
+//         type: 'list',
+//         name: 'departmentName',
+//         message: 'which department is this new role in?',
+//         choices: ''
+//     }
+// ]
 
 const addEmployee = {
     type: 'input',
@@ -109,7 +126,30 @@ function employeeOptions() {
             
         }
         if (result.choice === 'addRole') {
-            return inquirer.prompt(addRole)
+            db.promise().query('SELECT * FROM department;').then (result => {
+                const deptNamesArr = [];
+                result.forEach((department) => {deptNamesArr.push(department.name);});
+                console.log(deptNamesArr)
+                inquirer.prompt([
+                    {
+                            type: 'input',
+                            name: 'newRole',
+                            message: 'enter role name'
+                            },
+                            {
+                                type: 'input',
+                                name: 'newSalary',
+                                message: 'enter salary amount'
+                            },
+                            {
+                                type: 'list',
+                                name: 'departmentName',
+                                message: 'which department is this new role in?',
+                                choices: deptNamesArr
+                            }
+                ])
+            })
+           
         }
         if (result.choice === 'addEmployee') {
             return inquirer.prompt(addEmployee)
