@@ -21,8 +21,26 @@ const db = mysql.createConnection(
 
 const addDepartment = {
     type: 'input',
-    name: 'addDep',
+    name: 'newDepartment',
     message: 'enter department name'
+}
+
+const addRole = {
+    type: 'input',
+    name: 'addRole',
+    message: 'enter role name'
+}
+
+const addEmployee = {
+    type: 'input',
+    name: 'addEmploy',
+    message: 'enter employee name'
+}
+
+const updateEmployeeRole = {
+    type: 'input',
+    name: 'updateEmployRole',
+    message: ''
 }
 
 function employeeOptions() {
@@ -82,7 +100,20 @@ function employeeOptions() {
             employeeOptions();
         }
         if (result.choice === 'addDepartment') {
-            return inquirer.prompt(addDepartment)
+            return inquirer.prompt(addDepartment).then((answer) => {
+                console.log(answer)
+                db.promise().query(`INSERT INTO department (name) VALUES (?)`, answer.newDepartment );
+               
+                employeeOptions();
+            })
+            
+        }
+        if (result.choice === 'addRole') {
+            return inquirer.prompt(addRole)
+        }
+        if (result.choice === 'addEmployee') {
+            return inquirer.prompt(addEmployee)
+            
         }
     })
 }
