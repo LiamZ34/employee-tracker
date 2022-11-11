@@ -1,6 +1,6 @@
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
-// const db = require('.env');
+const cTable = require('console.table')
 const dotenv = require('dotenv');
 dotenv.config();
 
@@ -28,31 +28,6 @@ const addDepartment = {
     name: 'newDepartment',
     message: 'enter department name'
 }
-
-// const addRole = [
-//     {
-//     type: 'input',
-//     name: 'newRole',
-//     message: 'enter role name'
-//     },
-//     {
-//         type: 'input',
-//         name: 'newSalary',
-//         message: 'enter salary amount'
-//     },
-//     {
-//         type: 'list',
-//         name: 'departmentName',
-//         message: 'which department is this new role in?',
-//         choices: ''
-//     }
-// ]
-
-// const addEmployee = {
-//     type: 'input',
-//     name: 'addEmploy',
-//     message: 'enter employee name'
-// }
 
 const updateEmployeeRole = {
     type: 'input',
