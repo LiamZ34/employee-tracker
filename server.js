@@ -48,11 +48,11 @@ const addDepartment = {
 //     }
 // ]
 
-const addEmployee = {
-    type: 'input',
-    name: 'addEmploy',
-    message: 'enter employee name'
-}
+// const addEmployee = {
+//     type: 'input',
+//     name: 'addEmploy',
+//     message: 'enter employee name'
+// }
 
 const updateEmployeeRole = {
     type: 'input',
@@ -156,10 +156,10 @@ function employeeOptions() {
                         if (answer.departmentName === department.name) { departmentId = department.id; }
                     })
                     console.log(departmentId)
-                    let sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+                    let roleSql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
                     let newRoleValues = [createdRole, answer.salary, departmentId];
 
-                    db.promise().query(sql, newRoleValues);
+                    db.promise().query(roleSql, newRoleValues);
 
                     employeeOptions();
                 })
@@ -167,8 +167,103 @@ function employeeOptions() {
 
         }
         if (result.choice === 'addEmployee') {
-            return inquirer.prompt(addEmployee)
+            inquirer.prompt({
+                type: 'confirm',
+                name: 'manager',
+                message: 'Does this Employee have a manager?'
+            }).then((result) => {
+                if (result.manager === true) {
+                    db.promise().query('SELECT * FROM employee;').then(([response]) => {
+                        const managerNamesArr = [];
+                        response.forEach((employee) => { managerNamesArr.push(employee.first_name); });
+                        inquirer.prompt({
+                            type: 'list',
+                            name: 'manager',
+                            message: 'whos is the employees manager',
+                            choices: managerNamesArr
+                        }).then((answer) => {
+                            let employeeId;
+                            response.forEach((employee) => {
+                                if (answer.manager === employee.first_name) { employeeId = employee.id }
+                            })
 
+                            console.log(employeeId);
+                            db.promise().query('SELECT * FROM role;').then(([response]) => {
+                                const roleNamesArr = [];
+                                response.forEach((role) => { roleNamesArr.push(role.title); });
+                                inquirer.prompt([
+                                    {
+                                        type: 'input',
+                                        name: 'firstName',
+                                        message: 'Enter employee first name'
+                                    },
+                                    {
+                                        type: 'input',
+                                        name: 'lastName',
+                                        message: 'Enter employee last name'
+                                    },
+                                    {
+                                        type: 'list',
+                                        name: 'newEmployeeRole',
+                                        message: 'What is the employees role',
+                                        choices: roleNamesArr
+                                    }
+                                ]).then((result) => {
+                                    let roleId;
+                                    response.forEach((role) => {
+                                        if (result.newEmployeeRole === role.title) { roleId = role.id; }
+                                    })
+                                    console.log(roleId)
+                                    let employeeSql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, ?)`;
+                                    let newEmployeeValues = [result.firstName, result.lastName, roleId, employeeId];
+                                    console.log(newEmployeeValues)
+                                    db.promise().query(employeeSql, newEmployeeValues);
+
+                                    employeeOptions();
+
+                                })
+                            })
+                        })
+                    })
+                } else {
+                    
+                    db.promise().query('SELECT * FROM role;').then(([response]) => {
+                        const roleNamesArr = [];
+                        response.forEach((role) => { roleNamesArr.push(role.title); });
+                        inquirer.prompt([
+                            {
+                                type: 'input',
+                                name: 'firstName',
+                                message: 'Enter employee first name'
+                            },
+                            {
+                                type: 'input',
+                                name: 'lastName',
+                                message: 'Enter employee last name'
+                            },
+                            {
+                                type: 'list',
+                                name: 'newEmployeeRole',
+                                message: 'What is the employees role',
+                                choices: roleNamesArr
+                            }
+                        ]).then((result) => {
+                            let roleId;
+                            response.forEach((role) => {
+                                if (result.newEmployeeRole === role.title) { roleId = role.id; }
+                            })
+                            console.log(roleId)
+                            let employeeSql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?, ?, ?, NULL)`;
+                            let newEmployeeValues = [result.firstName, result.lastName, roleId,];
+                            console.log(newEmployeeValues)
+                            db.promise().query(employeeSql, newEmployeeValues);
+
+                            employeeOptions();
+
+                        })
+                    })
+                } 
+            })
         }
     })
 }
