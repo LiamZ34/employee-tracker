@@ -96,22 +96,22 @@ function employeeOptions() {
             }
             ]
         }
-    ]).then (result => {
+    ]).then(result => {
         console.log(result)
         if (result.choice === 'viewEmployees') {
-            db.promise().query('SELECT * FROM employee;').then (result => {
+            db.promise().query('SELECT * FROM employee;').then(result => {
                 console.table(result[0])
             })
             employeeOptions();
         }
         if (result.choice === 'viewRoles') {
-            db.promise().query('SELECT * FROM role;').then (result => {
+            db.promise().query('SELECT * FROM role;').then(result => {
                 console.table(result[0])
             })
             employeeOptions();
         }
         if (result.choice === 'viewDepartments') {
-            db.promise().query('SELECT * FROM department;').then (result => {
+            db.promise().query('SELECT * FROM department;').then(result => {
                 console.table(result[0])
             })
             employeeOptions();
@@ -119,42 +119,56 @@ function employeeOptions() {
         if (result.choice === 'addDepartment') {
             return inquirer.prompt(addDepartment).then((answer) => {
                 console.log(answer)
-                db.promise().query(`INSERT INTO department (name) VALUES (?)`, answer.newDepartment );
-               
+                db.promise().query(`INSERT INTO department (name) VALUES (?)`, answer.newDepartment);
+
                 employeeOptions();
             })
-            
+
         }
         if (result.choice === 'addRole') {
-            db.promise().query('SELECT * FROM department;').then (([results]) => {
+            db.promise().query('SELECT * FROM department;').then(([results]) => {
                 const deptNamesArr = [];
-                results.forEach((department) => {deptNamesArr.push(department.name);});
+                results.forEach((department) => { deptNamesArr.push(department.name); });
                 console.log('results', results)
                 console.log('deptNamesArr', deptNamesArr)
                 inquirer.prompt([
                     {
-                            type: 'input',
-                            name: 'newRole',
-                            message: 'enter role name'
-                            },
-                            {
-                                type: 'input',
-                                name: 'newSalary',
-                                message: 'enter salary amount'
-                            },
-                            {
-                                type: 'list',
-                                name: 'departmentName',
-                                message: 'which department is this new role in?',
-                                choices: deptNamesArr
-                            }
-                ])
+                        type: 'input',
+                        name: 'newRole',
+                        message: 'enter role name'
+                    },
+                    {
+                        type: 'input',
+                        name: 'salary',
+                        message: 'enter salary amount'
+                    },
+                    {
+                        type: 'list',
+                        name: 'departmentName',
+                        message: 'which department is this new role in?',
+                        choices: deptNamesArr
+                    }
+                ]).then((answer) => {
+                    let createdRole = answer.newRole;
+                    let departmentId;
+                    results.forEach((department) => {
+
+                        if (answer.departmentName === department.name) { departmentId = department.id; }
+                    })
+                    console.log(departmentId)
+                    let sql = `INSERT INTO role (title, salary, department_id) VALUES (?, ?, ?)`;
+                    let newRoleValues = [createdRole, answer.salary, departmentId];
+
+                    db.promise().query(sql, newRoleValues);
+
+                    employeeOptions();
+                })
             })
-           
+
         }
         if (result.choice === 'addEmployee') {
             return inquirer.prompt(addEmployee)
-            
+
         }
     })
 }
