@@ -154,7 +154,7 @@ function employeeOptions() {
                         inquirer.prompt({
                             type: 'list',
                             name: 'manager',
-                            message: 'whos is the employees manager',
+                            message: 'who is the employees manager',
                             choices: managerNamesArr
                         }).then((answer) => {
                             let employeeId;
@@ -238,6 +238,40 @@ function employeeOptions() {
                         })
                     })
                 } 
+            })
+        } if (result.choice === 'updateEmployeeRole') {
+            
+            let employeeSql = `SELECT * FROM employee;`
+            db.promise().query(employeeSql, (response) => {
+                let allEmployeeArr = [];
+                response.forEach((employee) => { allEmployeeArr.push(employee.first_name);});
+
+                let roleSql = `SELECT * FROM role;`
+                db.promise().query(roleSql, (result) => {
+                    let allRolesArr = [];
+                    result.forEach((role) => {allRolesArr.push(role.title);});
+
+                    inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'chooseEmployee',
+                            message: 'Which employee will have a new role?',
+                            choices: allEmployeeArr
+                        },
+                        {
+                            type: 'list',
+                            name: 'chooseNewRole',
+                            message: 'What new role will this employee have?',
+                            choices: allRolesArr
+                        }
+                    ]).then((answer) => {
+                        let (answer.)
+                    })
+
+
+                })
+
+
             })
         }
     })
