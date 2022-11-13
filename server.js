@@ -241,13 +241,13 @@ function employeeOptions() {
             })
         } if (result.choice === 'updateEmployeeRole') {
             
-            let employeeSql = `SELECT * FROM employee;`
-            db.promise().query(employeeSql, (response) => {
+             
+            db.promise().query(`SELECT * FROM employee;`).then(([response]) => {
                 let allEmployeeArr = [];
                 response.forEach((employee) => { allEmployeeArr.push(employee.first_name);});
 
-                let roleSql = `SELECT * FROM role;`
-                db.promise().query(roleSql, (result) => {
+                
+                db.promise().query(`SELECT * FROM role;`).then(([result]) => {
                     let allRolesArr = [];
                     result.forEach((role) => {allRolesArr.push(role.title);});
 
@@ -264,8 +264,23 @@ function employeeOptions() {
                             message: 'What new role will this employee have?',
                             choices: allRolesArr
                         }
-                    ]).then((answer) => {
-                        let (answer.)
+                    ]).then ((answer) => {
+                        let chosenEmployeeId, newRoleId;
+                        
+                        response.forEach((employee) => {
+                            if (answer.chooseEmployee === employee.first_name) { chosenEmployeeId = employee.id }
+                        });
+
+                        result.forEach((role) => {
+                            if (answer.chooseNewRole === role.title) { newRoleId = role.id }
+                        });
+
+                        console.log(chosenEmployeeId, newRoleId)
+
+                        let updateSql = `UPDATE employee SET employee.role_id = ? WHERE employee.id = ?`;
+                        db.promise().query(updateSql, [newRoleId, chosenEmployeeId]);
+
+                        employeeOptions();
                     })
 
 
