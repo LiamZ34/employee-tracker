@@ -4,13 +4,7 @@ const cTable = require('console.table')
 const dotenv = require('dotenv');
 dotenv.config();
 
-// const db = process.env.DB_NAME;
-// console.log(`your db name is ${process.env.DB_NAME}`)
-
-// const deptNamesArr = [];
-// response.forEach((department) => {deptNamesArr.push(department.department_name);});
-
-
+// allows connection to database
 const db = mysql.createConnection(
     {
         host: 'localhost',
@@ -23,19 +17,22 @@ const db = mysql.createConnection(
     console.log(`Connected to the database.`)
 );
 
-const addDepartment = {
-    type: 'input',
-    name: 'newDepartment',
-    message: 'enter department name'
-}
 
-const updateEmployeeRole = {
-    type: 'input',
-    name: 'updateEmployRole',
-    message: ''
-}
+// const addDepartment = {
+//     type: 'input',
+//     name: 'newDepartment',
+//     message: 'enter department name'
+// }
 
+// const updateEmployeeRole = {
+//     type: 'input',
+//     name: 'updateEmployRole',
+//     message: ''
+// }
+
+//starts up the inquirer prompt
 function employeeOptions() {
+    // asks all the questions of what the client wants to do
     inquirer.prompt([
         {
             type: 'list',
@@ -90,7 +87,7 @@ function employeeOptions() {
                 console.table(result[0])
             })
             employeeOptions();
-        }
+        }//the following code adds a new department to the db if "adddepartment" is chosen
         if (result.choice === 'addDepartment') {
             return inquirer.prompt(addDepartment).then((answer) => {
                 console.log(answer)
@@ -99,7 +96,7 @@ function employeeOptions() {
                 employeeOptions();
             })
 
-        }
+        }//if add role is chosen then the following code will add a new role to the db
         if (result.choice === 'addRole') {
             db.promise().query('SELECT * FROM department;').then(([results]) => {
                 const deptNamesArr = [];
@@ -140,7 +137,7 @@ function employeeOptions() {
                 })
             })
 
-        }
+        }// if add employee is chosen the following code will add a new employee to the db
         if (result.choice === 'addEmployee') {
             inquirer.prompt({
                 type: 'confirm',
@@ -238,7 +235,7 @@ function employeeOptions() {
                         })
                     })
                 } 
-            })
+            })// updates an employees role if "updateEmployeeRole" is chosen
         } if (result.choice === 'updateEmployeeRole') {
             
              
