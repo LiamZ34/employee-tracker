@@ -18,17 +18,12 @@ const db = mysql.createConnection(
 );
 
 
-// const addDepartment = {
-//     type: 'input',
-//     name: 'newDepartment',
-//     message: 'enter department name'
-// }
+const addDepartment = {
+    type: 'input',
+    name: 'newDepartment',
+    message: 'enter department name'
+}
 
-// const updateEmployeeRole = {
-//     type: 'input',
-//     name: 'updateEmployRole',
-//     message: ''
-// }
 
 //starts up the inquirer prompt
 function employeeOptions() {
